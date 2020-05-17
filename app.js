@@ -178,8 +178,8 @@ let app = new Vue({
         label: "負債",
         data: predV,
         yAxisID: "y-axis-1",
-        borderColor: "rgba(20,150,150,0)",
-        backgroundColor: "rgba(191,59,32,0.2)",
+        borderColor: "rgba(35, 188, 249, 0)",
+        backgroundColor: "rgba(249, 96, 35, 0.3)",
         pointRadius: 0,
       };
 
@@ -191,7 +191,7 @@ let app = new Vue({
           label: "資産",
           data: [],
           yAxisID: "y-axis-1",
-          borderColor: "rgba(21,121,187,0.5)",
+          borderColor: "rgba(35, 188, 249, 0.5)",
           backgroundColor: "rgba(122,192,239,0)",
           borderWidth: 1,
           pointRadius: 0,
@@ -211,17 +211,40 @@ let app = new Vue({
           datasets: [
             {
               label: "負債",
+              stack: "Stack0",
               data: [this.initData["V"], this.initData["Vsub"], this.pred.V[0]],
-              backgroundColor: "rgba(191,59,32,0.5)",
+              backgroundColor: "rgba(249, 96, 35, 0.3)",
             },
             {
               label: "資産",
+              stack: "Stack1",
               data: [
                 this.initData["F"],
                 this.initData["F"],
                 this.initData["F"],
               ],
-              backgroundColor: "rgba(122,192,239,0.8",
+              backgroundColor: "rgba(35, 188, 249, 0.3)",
+            },
+
+            {
+              label: "不足",
+              stack: "Stack1",
+              data: [
+                Math.max(0, this.initData["V"] - this.initData["F"]),
+                Math.max(0, this.initData["Vsub"] - this.initData["F"]),
+                Math.max(0, this.pred.V[0] - this.initData["F"]),
+              ],
+              backgroundColor: "rgba(249, 96, 35, 1)",
+            },
+            {
+              label: "剰余",
+              stack: "Stack0",
+              data: [
+                Math.max(0, this.initData["F"] - this.initData["V"]),
+                Math.max(0, this.initData["F"] - this.initData["Vsub"]),
+                Math.max(0, this.initData["F"] - this.pred.V[0]),
+              ],
+              backgroundColor: "rgba(35, 188, 249, 1)",
             },
           ],
         },
@@ -232,7 +255,7 @@ let app = new Vue({
           },
           responsive: true,
           scales: {
-            xAxes: [{}],
+            xAxes: [{ categoryPercentage: 0.8, barPercentage: 1.0 }],
             yAxes: [
               {
                 id: "y-axis-1", // Y軸のID

@@ -21,18 +21,32 @@
       integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
       crossorigin="anonymous"
     ></script>
-    <scripts
+    <script
       src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
       integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
       crossorigin="anonymous"
     ></script>
+    <link href="https://fonts.googleapis.com/css?family=M+PLUS+Rounded+1c" rel="stylesheet" />
+    <style>
+      body {
+        background-color:gainsboro;
+      }
+      * { font-family: "Sawarabi Gothic"; 
+      }
+      h1 {
+
+           text-align: center;
+        font-size: 16pt;
+      }
+    </style>
   </head>
 
   <body>
+    
     <div id="app">
       <br>
-     <h1 style="text-align:center;font-size:16pt;">年金財政シミュレーション</h1>
-<br>
+     <h1>年金財政シミュレーション</h1>
+     <br>
       <div class="container">
         <div class="card">
           <div class="card-header">計算前提</div>
@@ -249,6 +263,7 @@
           </div>
           <div class="card-body">
             <canvas id="currentStatus"></canvas>
+            <br>
             <canvas id="prediction"></canvas>
           </div>
         </div>
