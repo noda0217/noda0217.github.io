@@ -4,6 +4,7 @@ let app = new Vue({
     return {
       initData: {},
 
+      
       span: 15,
       V: 0,
       C: 0,
