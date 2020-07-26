@@ -1,5 +1,4 @@
-import * as pension from './my-module/pension.js'
-import { compareArray } from './my-module/utility.js'
+import * as module from '/module.js'
 let data = {
   initData: {},
 
@@ -24,145 +23,9 @@ let data = {
 let app = new Vue({
   el: '#app',
   data,
-
+  
   methods: {
-    //二つの配列を比較して、arrayBig>arrySmallのindexのvalueを1とする
-    compareArray: compareArray,
-    calDurV: function () {
-      return (
-        (Math.log(this.initData['V']) - Math.log(this.initData['Vsub'])) /
-        (Math.log(1 + this.initData['IRsub'] / 100) -
-          Math.log(1 + this.initData['IR'] / 100))
-      )
-    },
-    calDurC: function () {
-      return (
-        (Math.log(this.initData['C']) - Math.log(this.initData['Csub'])) /
-        (Math.log(1 + this.initData['IRsub'] / 100) -
-          Math.log(1 + this.initData['IR'] / 100))
-      )
-    },
 
-    calV: function (IR, durV) {
-      return Math.round(
-        this.initData['V'] *
-          ((1 + this.initData['IR'] / 100) / (1 + IR / 100)) ** durV
-      )
-    },
-
-    calC: function (IR, durC) {
-      return Math.round(
-        this.initData['C'] *
-          ((1 + this.initData['IR'] / 100) / (1 + IR / 100)) ** durC
-      )
-    },
-    csvToObject: function (csv) {
-      //csv: col1 is header, col2 is data
-      let obj1 = csv.split('\n')
-      let obj2 = {}
-      for (let row of obj1) {
-        let rowSplited = row.split(',')
-        obj2[rowSplited[0]] = parseInt(rowSplited[1].trim())
-      }
-      return obj2
-    },
-
-    normDist: function (mu, sigma, randomX, randomY) {
-      return (
-        mu +
-        sigma *
-          Math.sqrt(-2 * Math.log(randomX)) *
-          Math.cos(2 * Math.PI * randomY)
-      )
-    },
-
-    minOfArray: function (array) {
-      return array.reduce((a, b) => {
-        return a > b ? b : a
-      })
-    },
-    maxOfArray: function (array) {
-      return array.reduce((a, b) => {
-        return a > b ? a : b
-      })
-    },
-    readJSON: function () {
-      this.initDataTable = true
-      fetch('./initData.json')
-        .then((response) => {
-          return response.json()
-        })
-        .then((data) => {
-          this.initData = data
-        })
-
-      document.getElementById('readJSON').blur()
-    },
-    readCSV: function () {
-      this.initDataTable = true
-
-      fetch('./initData.csv')
-        .then((response) => {
-          return response.text()
-        })
-        .then((response) => {
-          this.initData = this.csvToObject(response)
-        })
-
-      document.getElementById('readCSV').blur()
-    },
-
-    simulate: function () {
-      this.durC = this.calDurC()
-      this.durV = this.calDurV()
-      this.V = this.calV(this.IR, this.durV)
-      this.C = this.calC(this.IR, this.durC)
-
-      this.pred.C = [...Array(this.span + 1)].map(() => {
-        return this.C
-      })
-      this.pred.B = [...Array(this.span + 1)].map(() => {
-        return this.initData['B']
-      })
-
-      this.pred.V = [...Array(this.span + 1)].map(() => {
-        return 0
-      })
-
-      this.pred.V[0] = this.V
-      for (let n = 1; n < this.span + 1; n++) {
-        let i = this.IR / 100
-        this.pred.V[n] = Math.round(
-          this.pred.V[n - 1] * (1 + i) +
-            (this.pred.C[n] - this.pred.B[n]) * (1 + i) ** 0.5
-        )
-      }
-
-      this.pred.Fs = []
-      for (let i = 1; i <= this.count; i++) {
-        let predF = [...Array(this.span + 1)].map(() => {
-          return 0
-        })
-        predF[0] = this.initData['F']
-
-        for (let n = 1; n < this.span + 1; n++) {
-          let X = Math.random()
-          let Y = Math.random()
-          let r = this.normDist(this.ER / 100, this.SD / 100, X, Y)
-          predF[n] = Math.round(
-            predF[n - 1] * (1 + r) +
-              (this.pred.C[n] - this.pred.B[n]) * (1 + r) ** 0.5
-          )
-        }
-        this.pred.Fs.push(predF)
-      }
-
-      let labels = this.makeLabels(this.span)
-      let datasets = this.makeDatasets(this.pred.V, this.pred.Fs)
-
-      this.drawGraph(labels, datasets)
-      document.getElementById('simulate').blur()
-    },
 
     makeLabels: function (span) {
       return [...Array(span + 1)].map((value, index) => index)
@@ -199,6 +62,7 @@ let app = new Vue({
 
       return datasets
     },
+    
     drawGraph: function (labels, datasets) {
       let ctxCurrent = document.getElementById('currentStatus')
       new Chart(ctxCurrent, {
